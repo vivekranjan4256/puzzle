@@ -1,44 +1,36 @@
 import axios from "axios";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-import '../styles.css'
+import "../styles.css";
+import "../bootstrap-social.css";
 
-function SignUp() {
-    const navigate=useNavigate()
+function Login() {
+  const navigate = useNavigate();
 
-  const registerUser = (e) => {
+  const loginUser = async (e) => {
     e.preventDefault();
-    axios.post("http://localhost:3001/register", {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
-    })
-    .then(()=>{navigate('/play')})
-    .catch((err)=>(console.log('register fn axios',err)));
-
-    console.log({
-        name: e.target.name.value,
-        email: e.target.email.value,
+   await axios
+      .post("http://localhost:3001/login", {
+        username: e.target.email.value,
         password: e.target.password.value,
       })
+      .then((incoming_data) => {
+        console.log('loginUser fn',incoming_data)
+        if (incoming_data) navigate("/play");
+        else navigate("/home");
+      })
+      .catch((err) => console.log("register fn axios", err));
+
   };
 
   return (
     <div className="container mt-5">
-      <h1>Register</h1>
+      <h1>Login</h1>
       <br />
       <div className="col-lg-12">
         <div className="card">
           <div className="card-body">
-            <form onSubmit={registerUser}>
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  placeholder="Name"
-                />
-              </div>
+            <form onSubmit={loginUser}>
               <div className="form-group">
                 <input
                   type="email"
@@ -56,7 +48,7 @@ function SignUp() {
                 />
               </div>
               <button type="submit" className="btn btn-dark">
-                Register
+                Login
               </button>
             </form>
           </div>
@@ -66,4 +58,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Login;

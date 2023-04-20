@@ -65,6 +65,7 @@ const userSchema = new mongoose.Schema({
   provider: String, // values: 'local', 'google', 'facebook'
   email: String,
   secret: String,
+  name:String
 });
 
 userSchema.plugin(passportLocalMongoose, {
@@ -87,11 +88,12 @@ passport.deserializeUser(function (id, done) {
 
 
 app.get("/", function (req, res) {
- 
+ res.send("login failed")
 });
 
 app.get("/logout", function (req, res) {
-
+    req.logout();
+    res.redirect("/");
 });
 
 app.get("/login", function (req, res) {
@@ -159,14 +161,14 @@ res.send('received')
 
 app.post(
   "/login",
-  passport.authenticate("local", {
-    //successRedirect: '/secrets',
-    failureRedirect: "/login",
-  }),
+  passport.authenticate("local"),
   function (req, res) {
+    console.log('login post rt success')
+    console.log(req.user)
+    console.log(req.body)
     // If this function gets called, authentication was successful.
     // This is just to show that this function is accessbile in case of success
-    res.redirect("/secrets");
+    res.status(200).json({success:true});
   }
 );
 

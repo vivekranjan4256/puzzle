@@ -1,11 +1,37 @@
 import React from "react";
 import { useState, useRef, useEffect } from "react";
+// import './App.css'
 
-function InputBoxes() {
-  const [names, setNames] = useState(["", "", "", ""]);
-  const [attempts, setAttempts] = useState([0, 0, 0, 0]);
+function GamePage() {
+  const [names, setNames] = useState([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
+  const [attempts, setAttempts] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   const [currentInputIndex, setCurrentInputIndex] = useState(0);
   const inputRefs = useRef([]);
+  const [arr, setArr] = useState([
+    "Mongolia",
+    "Germany",
+    "New Zealand",
+    "Somalia",
+    "Australia",
+    "South Korea",
+    "Spain",
+    "Japan",
+    "Namibia",
+    "Egypt",
+    "India",
+  ]);
 
   useEffect(() => {
     inputRefs.current[0].focus();
@@ -14,7 +40,8 @@ function InputBoxes() {
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      if (event.target.value === "vivek") {
+      // console.log(arr[index]);
+      if (event.target.value === arr[index]) {
         setAttempts((prev) => {
           const newAttempts = [...prev];
           newAttempts[index] += 1;
@@ -53,27 +80,46 @@ function InputBoxes() {
   };
 
   return (
-    <div>
-      {names.map((name, index) => (
-        <div key={index}>
-          <input
-            type="text"
-            placeholder={`Enter name ${index + 1}`}
-            value={name}
-            onChange={(event) => handleInputChange(event, index)}
-            onKeyDown={(event) => handleKeyDown(event, index)}
-            onClick={() => handleInputClick(index)}
-            disabled={
-              index !== currentInputIndex ||
-              (index > 0 && names[index - 1] !== "vivek")
-            }
-            ref={(el) => (inputRefs.current[index] = el)}
-          />
-          <p>Attempts: {attempts[index]}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      <div id="wall">
+        <a
+          href="https://earth.google.com/web/data=MicKJQojCiExdWxYODNWVkxBVnVZWUpfMk1KcWtDNE5RN2VyOEJjaUU6AwoBMA?authuser=0"
+          target="blank"
+          id="googleearth"
+        >
+          Start Exploring
+        </a>
+      </div>
+      <div className="outerbox row">
+        {arr.map((country, index) => (
+          <div key={index}>
+            <div className="col-sm-6 mb-3 mb-sm-0">
+              <div className="card">
+                <div className="card-body">
+                  <input
+                    className="attemptbox"
+                    type="text"
+                    placeholder={`Enter name ${index + 1}`}
+                    value={names[index]}
+                    onChange={(event) => handleInputChange(event, index)}
+                    onKeyDown={(event) => handleKeyDown(event, index)}
+                    onClick={() => handleInputClick(index)}
+                    disabled={
+                      index !== currentInputIndex
+                      // ||
+                      // (index > 0 && names[index - 1] !== arr[index])
+                    }
+                    ref={(el) => (inputRefs.current[index] = el)}
+                  />
+                  <p>Attempts: {attempts[index]}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 
-export default InputBoxes;
+export default GamePage;
