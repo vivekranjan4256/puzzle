@@ -8,7 +8,7 @@ function SignUp() {
 
   const registerUser = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:3001/register", {
+    axios.post(process.env.REACT_APP_BACKEND_URI+"/register", {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
@@ -16,11 +16,9 @@ function SignUp() {
     .then(()=>{navigate('/play')})
     .catch((err)=>(console.log('register fn axios',err)));
 
-    console.log({
-        name: e.target.name.value,
-        email: e.target.email.value,
-        password: e.target.password.value,
-      })
+    e.target.name.value="";
+    e.target.email.value="";
+    e.target.password.value=""
   };
 
   return (

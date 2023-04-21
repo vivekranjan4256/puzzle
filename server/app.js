@@ -6,9 +6,8 @@ const session = require("express-session");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
-const cors=require("cors")
-const helmet = require('helmet')
-
+const cors = require("cors");
+const helmet = require("helmet");
 
 const app = express();
 
@@ -23,27 +22,29 @@ app.use(
 app.use(express.json());
 
 app.use(
-    cors({
-      origin: "http://localhost:4001",
-      methods: "GET,POST,PUT,DELETE,OPTIONS"
-    })
-  );
-
-  app.use(
-    cookieSession({
-      name: "session",
-      keys: ["eltimus"],
-      maxAge: 24 * 60 * 60 * 1000, //1day
-    })
-  );
-
-app.use(
-  session({
-    secret: "mukhiya elitmus",
-    resave: false,
-    saveUninitialized: true
+  cors({
+    origin: process.env.FRONTEND_URI,
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
   })
 );
+
+app.use(
+    session({
+      secret: "keyboard cat",
+      saveUninitialized: false,
+      resave: false
+    })
+  );
+
+// app.use(
+//   cookieSession({
+//     name: "session",
+//     keys: ["eltimus"],
+//     maxAge: 24 * 60 * 60 * 1000, //1day
+//   })
+// );
+
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -57,19 +58,18 @@ db.once("open", function () {
 });
 
 const userSchema = new mongoose.Schema({
-  username: {
+  email: {
     type: String,
     unique: true,
   }, // values: email address, googleId, facebookId
   password: String,
   provider: String, // values: 'local', 'google', 'facebook'
-  email: String,
   secret: String,
-  name:String
+  name: String,
 });
 
 userSchema.plugin(passportLocalMongoose, {
-  usernameField: "username",
+  usernameField: "email",
 });
 
 const User = mongoose.model("User", userSchema);
@@ -86,22 +86,21 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 app.get("/", function (req, res) {
- res.send("login failed")
+  res.send("login failed");
 });
 
 app.get("/logout", function (req, res) {
-    req.logout();
-    res.redirect("/");
+  req.logout();
+  res.redirect("/");
 });
 
-app.get("/login", function (req, res) {
-});
+app.get("/login", function (req, res) {});
 
-app.get("/register", function (req, res) {
-
-});
+app.get("/register", function (req, res) {});
 
 app.get("/secrets", function (req, res) {
   //to stop brower from caching secrets page after we logout
@@ -116,7 +115,6 @@ app.get("/secrets", function (req, res) {
         console.log("secrets get rt error", err);
       } else {
         if (foundUsers) {
-         
         }
       }
     });
@@ -126,31 +124,31 @@ app.get("/secrets", function (req, res) {
 });
 
 app.post("/register", function (req, res) {
-    console.log('register post rt',req.body)
+  console.log("register post rt", req.body);
   const password = req.body.password;
 
   User.register(
     {
-      username: req.body.email,//since we are using this field in the passport local mongoose plugin so better to keep it
       email: req.body.email,
-      name:req.body.name,
+      name: req.body.name,
       provider: "local",
     },
     password,
     function (err, user) {
       if (err) {
         console.log("register  post rt error", err);
-        res.end()
+        res.end();
       } else {
-        console.log('user in register rt',user)
+        console.log("user in register rt", user);
         req.login(user, function (err) {
-          res.status(200)
+            console.log('user in register rt',user)
+          //res.status(200);
+          res.redirect('/')
         });
       }
     }
   );
 
-res.send('received')
 });
 
 // app.post('/login',
@@ -161,22 +159,24 @@ res.send('received')
 
 app.post(
   "/login",
-  passport.authenticate("local"),
+  passport.authenticate("local", { failureRedirect: "/" }), //if the authentication is successful then passport middleware will call the next function
   function (req, res) {
-    console.log('login post rt success')
-    console.log(req.user)
-    console.log(req.body)
+    console.log("login post rt success");
+    console.log(req.user);
+    console.log(req.body);
     // If this function gets called, authentication was successful.
     // This is just to show that this function is accessbile in case of success
-    res.status(200).json({success:true});
+    res.status(200).json({ success: true });
   }
 );
 
-app.get("/submit", function (req, res) {
+app.get("/is_linked", function (req, res) {
+  console.log(req.isAuthenticated());
   if (req.isAuthenticated()) {
-    res.render("submit");
+    console.log("authenticated");
+    res.send(true);
   } else {
-    res.redirect("/login");
+    res.send(false);
   }
 });
 

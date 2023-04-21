@@ -1,0 +1,16 @@
+body{
+    /* font-family:'Montserrat',sans-serif; */
+    text-align: center;
+  
+  }
+  
+  h1{
+    font-weight: 900;/*this is for black(the font style not color) coz font system has been updated*/
+    font-size: 3.5rem;
+    line-height: 1.5;
+    color: black;
+  }
+  h2, h3{
+    font-weight: bold;
+  }
+ 

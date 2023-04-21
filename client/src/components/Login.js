@@ -2,7 +2,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import "../styles.css";
-import "../bootstrap-social.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -10,17 +9,19 @@ function Login() {
   const loginUser = async (e) => {
     e.preventDefault();
    await axios
-      .post("http://localhost:3001/login", {
-        username: e.target.email.value,
-        password: e.target.password.value,
+      .post(process.env.REACT_APP_BACKEND_URI+"/login", {
+        email: e.target.email.value,
+        password: e.target.password.value
       })
       .then((incoming_data) => {
         console.log('loginUser fn',incoming_data)
+       
         if (incoming_data) navigate("/play");
-        else navigate("/home");
       })
       .catch((err) => console.log("register fn axios", err));
 
+      e.target.email.value="";
+      e.target.password.value=""
   };
 
   return (
