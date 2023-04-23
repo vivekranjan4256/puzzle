@@ -12,7 +12,7 @@ function Login() {
       .post(process.env.REACT_APP_BACKEND_URI+"/login", {
         email: e.target.email.value,
         password: e.target.password.value
-      })
+      },{withCredentials:true})
       .then((incoming_data) => {
         console.log('loginUser fn',incoming_data)
        

@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./navbar.css";
 function Navbar() {
-  const handleLogout = () => {};
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    console.log(e)
+    e.preventDefault()
+    axios.get(process.env.REACT_APP_BACKEND_URI+'/logout',{withCredentials:true})
+    .then(()=>{ navigate('/')})
+    .catch((err)=>{console.log('handle logout error',err)})
+  };
   return (
     <>
       <nav 
@@ -64,10 +74,10 @@ function Navbar() {
                   </Link>
                 </li>
 
-                <li className="nav-item">
+                <li className="nav-item" data-bs-dismiss="offcanvas">
                   <a
                     className="nav-link"
-                    href="#just to remove warning"
+                    href="just for warning"
                     onClick={handleLogout}
                   >
                     Log Out
