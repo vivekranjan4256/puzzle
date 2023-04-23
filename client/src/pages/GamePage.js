@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 
     
 
-function GamePage() {
+function GamePage(setVerified) {
   const navigate=useNavigate()
 
 
   const [showGame, setShowGame] = useState(false);
   const [showStats, setShowStats] = useState(false);
-
+  
   const handleStartButton = (e) => {
     setShowGame(true);
   };
@@ -26,6 +26,7 @@ function GamePage() {
   useEffect(() => {
     axios.get(process.env.REACT_APP_BACKEND_URI+'/is_linked',{withCredentials:true}).then((resp) => {
       console.log("GamePage",resp.data)
+      // setVerified(true)
       if (resp.data === true) {
         navigate("/play");
       } else {

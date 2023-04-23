@@ -2,21 +2,30 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./navbar.css";
-function Navbar() {
-  const navigate = useNavigate();
+import { useEffect } from "react";
 
+function Navbar(verified) {
+  const navigate = useNavigate();
   const handleLogout = (e) => {
-    console.log(e)
-    e.preventDefault()
-    axios.get(process.env.REACT_APP_BACKEND_URI+'/logout',{withCredentials:true})
-    .then(()=>{ navigate('/')})
-    .catch((err)=>{console.log('handle logout error',err)})
+    console.log(e);
+    e.preventDefault();
+    axios
+      .get(process.env.REACT_APP_BACKEND_URI + "/logout", {
+        withCredentials: true,
+      })
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log("handle logout error", err);
+      });
   };
+
   return (
     <>
-      <nav 
+      <nav
         className="navbar navbar-dark bg-dark fixed-top"
-         style={{ padding: "0" }}
+        style={{ padding: "0" }}
       >
         <div className="container-fluid">
           <h1
@@ -68,22 +77,27 @@ function Navbar() {
                   </a>
                 </li>
 
-                <li className="nav-item" data-bs-dismiss="offcanvas">
-                  <Link to="/admin" className="nav-link">
-                    Admin page
-                  </Link>
-                </li>
+                {verified ? 
+                  <>
+                    <li className="nav-item" data-bs-dismiss="offcanvas">
+                      <Link to="/admin" className="nav-link">
+                        Admin page
+                      </Link>
+                    </li>
 
-                <li className="nav-item" data-bs-dismiss="offcanvas">
-                  <a
-                    className="nav-link"
-                    href="just for warning"
-                    onClick={handleLogout}
-                  >
-                    Log Out
-                  </a>
-                </li>
-
+                    <li className="nav-item" data-bs-dismiss="offcanvas">
+                      <a
+                        className="nav-link"
+                        href="just for warning"
+                        onClick={handleLogout}
+                      >
+                        Log Out
+                      </a>
+                    </li>
+                  </>
+                : 
+                  <></>
+                }
               </ul>
             </div>
           </div>
