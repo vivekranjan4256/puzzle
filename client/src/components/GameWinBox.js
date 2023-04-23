@@ -42,7 +42,7 @@ console.log('Game win box',curUserFinalStats)
         <br /><br />
         <p>Rank: {rank}</p>
         <p>Accuracy: {curUserFinalStats.accuracy}%</p>
-        <p>Total time taken: {curUserFinalStats.time} seconds</p>
+        <p>Total time taken: {curUserFinalStats.total_time} seconds</p>
         
         
   </div>

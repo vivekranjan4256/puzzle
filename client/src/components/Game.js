@@ -35,7 +35,7 @@ function Game({ showFinalStats, setCurUserFinalStats }) {
     "Japan",
     "Namibia",
     "Egypt",
-    "Hong Kong",
+    "China",
     "India",
   ]);
 
@@ -85,7 +85,7 @@ function Game({ showFinalStats, setCurUserFinalStats }) {
       if (event.target.value === arr[index]) {
         timePassed[index] = (time - now) / 1000;
         handleStop();
-        if (index === 1) {
+        if (index === 11) {
           setGameOver(true);
           await send_user_stats();
           showFinalStats();

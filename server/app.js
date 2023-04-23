@@ -45,21 +45,27 @@ app.use(cookieParser());
 //   })
 // );
 
-mongoose.connect("mongodb://127.0.0.1:27017/elitmusDB");
+//"mongodb://127.0.0.1:27017/elitmusDB"
+mongoose.connect(process.env.MONGO_URI).catch((err) => console.log("error connecting to elitmusDB", err));
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
-  console.log("we are connected to local database!");
-  //console.log("we are connected to cloud database!");
+  //console.log("we are connected to local database!");
+  console.log("we are connected to cloud database!");
 });
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    unique: true,
+    required:true,
+    unique: true
   },
   password: String,
-  name: String,
+  name:{
+    type:String,
+    required:true
+  }
 });
 
 const User = mongoose.model("User", userSchema);
@@ -240,7 +246,7 @@ app.get("/is_admin", function (req, res) {
     req.cookies,
     req.cookies.cookieName
   );
-  if (req.cookies.cookieName == "2005416@kiit.ac.in") {
+  if (req.cookies.cookieName == "vivekranjan4256@gmail.com") {
     res.send(true);
   } else {
     res.send(false);

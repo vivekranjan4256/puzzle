@@ -32,6 +32,7 @@ function SignUp() {
               <div className="form-group">
                 <input
                   type="text"
+                  required
                   className="form-control"
                   name="name"
                   placeholder="Name"
@@ -40,6 +41,7 @@ function SignUp() {
               <div className="form-group">
                 <input
                   type="email"
+                  required
                   className="form-control"
                   name="email"
                   placeholder="Email"
@@ -49,6 +51,7 @@ function SignUp() {
                 <input
                   type="password"
                   className="form-control"
+                  required
                   name="password"
                   placeholder="Password"
                 />
