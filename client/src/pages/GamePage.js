@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import Game from "../components/Game";
 import Rules from "../components/Rules";
-import CurrentUserStats from "../components/CurrentUserStats";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import GameWinBox from "../components/GameWinBox";
 
     
 
-function GamePage(setVerified) {
+function GamePage({setVerified}) {
   const navigate=useNavigate()
 
 
   const [showGame, setShowGame] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [curUserFinalStats,setCurUserFinalStats]=useState({})
   
   const handleStartButton = (e) => {
     setShowGame(true);
@@ -39,12 +40,15 @@ function GamePage(setVerified) {
     <div>
       {!showStats ? (
         showGame ? (
-          <Game showFinalStats={showFinalStats} />
+          <Game showFinalStats={showFinalStats} setCurUserFinalStats={setCurUserFinalStats} />
         ) : (
           <Rules startButton={handleStartButton} />
         )
       ) : (
-        <CurrentUserStats />
+        <>
+        {console.log(curUserFinalStats)}
+        <GameWinBox curUserFinalStats={curUserFinalStats}/>
+        </>
       )}
     </div>
   );

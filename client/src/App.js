@@ -6,6 +6,7 @@ import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import AdminPage from "./pages/AdminPage";
+import AboutPage from "./pages/AboutPage";
 
 function App() {
   const [verified, setVerified] = useState(true);
@@ -18,9 +19,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/play" element={<GamePage verified={verified} setVerified={setVerified} />} />
+          <Route path="/play" element={<GamePage setVerified={setVerified} />} />
         </Routes>
       </Router>
     </>

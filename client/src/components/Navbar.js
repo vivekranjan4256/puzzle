@@ -67,14 +67,12 @@ function Navbar(verified) {
             <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li className="nav-item" data-bs-dismiss="offcanvas">
-                  <a
+                  <Link to="/about"
                     className="nav-link"
-                    href="#googlemap"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    
                   >
-                    Clues
-                  </a>
+                   About
+                  </Link>
                 </li>
 
                 {verified ? 

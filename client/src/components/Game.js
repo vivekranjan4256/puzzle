@@ -1,10 +1,10 @@
 import React from "react";
 import { useState, useRef, useEffect } from "react";
 import "../styles.css";
-import CurrentUserStats from "./CurrentUserStats";
+import GameWinBox from "./GameWinBox";
+import axios from "axios";
 
-
-function Game({showFinalStats}) {
+function Game({showFinalStats,setCurUserFinalStats}) {
   const [names, setNames] = useState([
     "",
     "",
@@ -48,10 +48,6 @@ function Game({showFinalStats}) {
   const [gameOver, setGameOver] = useState(false);
   const [isCelebrating, setIsCelebrating] = useState(false);
 
-  // const startCelebrating = () => {
-  //   setIsCelebrating(true);
-  //   setTimeout(() => setIsCelebrating(false), 7000);
-  // };
 
   const handleStart = () => {
     setTime(Date.now());
@@ -69,7 +65,13 @@ function Game({showFinalStats}) {
     inputRefs.current[0].focus();
   }, []);
 
-  const handleKeyDown = (event, index) => {
+  const send_user_stats= async ()=>
+  {
+  await axios.post(process.env.REACT_APP_BACKEND_URI+'/user_stats',{time_ar:timePassed,attempts_ar:attempts})
+  .then((res)=>{setCurUserFinalStats(res.data)})
+  .catch((err)=>{console.log('send_user_stats fn in Game',err)})
+  }
+  const handleKeyDown = async (event, index) => {
     if (event.key === "Enter") {
       event.preventDefault();
       // console.log(arr[index]);
@@ -78,8 +80,9 @@ function Game({showFinalStats}) {
         handleStop();
         if (index === 1) {
           setGameOver(true);
-          
+          await send_user_stats()
           showFinalStats();
+
         }
         setAttempts((prev) => {
           const newAttempts = [...prev];

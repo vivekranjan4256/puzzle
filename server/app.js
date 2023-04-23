@@ -18,7 +18,6 @@ app.use(
 );
 app.use(express.json());
 
-
 app.use(
   cors({
     origin: process.env.FRONTEND_URI,
@@ -26,15 +25,15 @@ app.use(
     credentials: true,
   })
 );
-app.use(function(req, res, next) {
-  res.header('Content-Type', 'application/json;charset=UTF-8')
-  res.header('Access-Control-Allow-Credentials', true)
+app.use(function (req, res, next) {
+  res.header("Content-Type", "application/json;charset=UTF-8");
+  res.header("Access-Control-Allow-Credentials", true);
   res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  )
-  next()
-})
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 app.use(cookieParser());
 
@@ -75,6 +74,21 @@ app.get("/", function (req, res) {
 
 app.get("/register", function (req, res) {
   res.end();
+});
+
+app.post("/user_stats", (req, res) => {
+  console.log("user_stats post rt", req.body);
+  const tiar = req.body.time_ar;
+  let total_time = 0;
+  for (let i = 0; i < tiar.length; i += 1) total_time += tiar[i];
+  total_time = total_time.toFixed(3);
+  const atar = req.body.attempts_ar;
+  let total_attemps = 0;
+  for (let i = 0; i < atar.length; i += 1) total_attemps += atar[i];
+  let percentage_accuracy = 12 / total_attemps*100;
+  percentage_accuracy = percentage_accuracy.toFixed(2);
+  console.log({ time: total_time, accuracy: percentage_accuracy });
+  res.send({ time: total_time, accuracy: percentage_accuracy });
 });
 
 app.post("/register", function (req, res) {
@@ -126,7 +140,7 @@ app.post("/login", function (req, res) {
 });
 
 app.get("/logout", function (req, res) {
-  console.log('logout get rt')
+  console.log("logout get rt");
   res.clearCookie("cookieName");
   res.end();
 });
@@ -150,7 +164,7 @@ app.get("/is_admin", function (req, res) {
     req.cookies,
     req.cookies.cookieName
   );
-  if (req.cookies.cookieName=='2005416@kiit.ac.in') {
+  if (req.cookies.cookieName == "2005416@kiit.ac.in") {
     res.send(true);
   } else {
     res.send(false);
