@@ -4,7 +4,7 @@ import "../styles.css";
 import GameWinBox from "./GameWinBox";
 import axios from "axios";
 
-function Game({showFinalStats,setCurUserFinalStats}) {
+function Game({ showFinalStats, setCurUserFinalStats }) {
   const [names, setNames] = useState([
     "",
     "",
@@ -48,7 +48,6 @@ function Game({showFinalStats,setCurUserFinalStats}) {
   const [gameOver, setGameOver] = useState(false);
   const [isCelebrating, setIsCelebrating] = useState(false);
 
-
   const handleStart = () => {
     setTime(Date.now());
     setNow(Date.now());
@@ -65,12 +64,20 @@ function Game({showFinalStats,setCurUserFinalStats}) {
     inputRefs.current[0].focus();
   }, []);
 
-  const send_user_stats= async ()=>
-  {
-  await axios.post(process.env.REACT_APP_BACKEND_URI+'/user_stats',{time_ar:timePassed,attempts_ar:attempts})
-  .then((res)=>{setCurUserFinalStats(res.data)})
-  .catch((err)=>{console.log('send_user_stats fn in Game',err)})
-  }
+  const send_user_stats = async () => {
+    await axios
+      .post(
+        process.env.REACT_APP_BACKEND_URI + "/user_stats",
+        { time_ar: timePassed, attempts_ar: attempts },
+        { withCredentials: true }//using this as the source to get usermail
+      )
+      .then((res) => {
+        setCurUserFinalStats(res.data);
+      })
+      .catch((err) => {
+        console.log("send_user_stats fn in Game", err);
+      });
+  };
   const handleKeyDown = async (event, index) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -80,9 +87,8 @@ function Game({showFinalStats,setCurUserFinalStats}) {
         handleStop();
         if (index === 1) {
           setGameOver(true);
-          await send_user_stats()
+          await send_user_stats();
           showFinalStats();
-
         }
         setAttempts((prev) => {
           const newAttempts = [...prev];
@@ -125,14 +131,14 @@ function Game({showFinalStats,setCurUserFinalStats}) {
   return (
     <div id="top">
       <div>
-          <a
+        <a
           className="btn btn-outline-primary"
-            href="https://earth.google.com/web/data=MicKJQojCiExdWxYODNWVkxBVnVZWUpfMk1KcWtDNE5RN2VyOEJjaUU6AwoBMA?authuser=0"
-            target="blank"
-            id="googleearth"
-          >
-            Start Exploring
-          </a>
+          href="https://earth.google.com/web/data=MicKJQojCiExdWxYODNWVkxBVnVZWUpfMk1KcWtDNE5RN2VyOEJjaUU6AwoBMA?authuser=0"
+          target="blank"
+          id="googleearth"
+        >
+          Start Exploring
+        </a>
       </div>
       <div className="outerbox grid-container">
         {arr.map((country, index) => (

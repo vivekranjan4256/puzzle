@@ -1,20 +1,38 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function AdminPage(props) {
-const navigate=useNavigate()
+  const navigate = useNavigate();
+
+  let [allusersinfo, setallusersinfo] = useState([]);
 
   useEffect(() => {
-    axios.get(process.env.REACT_APP_BACKEND_URI+'/is_admin',{withCredentials:true}).then((resp) => {
-      console.log("AdminPage",resp)
-      if (resp.data === true) {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
-    });
+    axios
+      .get(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        console.log("AdminPage", resp);
+        if (resp.data === true) {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      });
+    allUserStats();
+    console.log("saved state", allusersinfo);
   }, []);
+
+  const allUserStats = async () => {
+    axios
+      .get(process.env.REACT_APP_BACKEND_URI + "/all_user_stats")
+      .then((resp) => {
+        setallusersinfo(resp.data);
+        console.log("all user stats resp", resp.data);
+      })
+      .catch((err) => console.log("all user stats fn adminPage err", err));
+  };
 
   return (
     <>
@@ -29,24 +47,17 @@ const navigate=useNavigate()
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td >1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <td >2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            <td></td>
-          </tr>
-          {/* <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-          </tr> */}
+          {allusersinfo.map((data, index) => {
+            return (
+              <tr key={index}>
+                <th scope="row">{index + 1}</th>
+                <td>{data.name}</td>
+                <td>{data.email}</td>
+                <td>{data.time}</td>
+                <td>{data.accuracy}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </>

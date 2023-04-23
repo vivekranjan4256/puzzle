@@ -64,6 +64,18 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
+const playerSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    unique: true,
+  },
+  name: String,
+  time: Number,
+  accuracy: Number,
+});
+
+const Player = mongoose.model("Player", playerSchema);
+
 app.get("/", function (req, res) {
   res.send("home route");
 });
@@ -76,18 +88,64 @@ app.get("/register", function (req, res) {
   res.end();
 });
 
-app.post("/user_stats", (req, res) => {
+app.get("/all_user_stats", (req, res) => {
+  Player.find()
+    .then((users) => {
+      users.sort(function (a, b) {
+        return a.time-b.time;
+      }); //if positive value is returned then swap a,b})
+      console.log(users);
+      res.send(users);
+    })
+    .catch((err)=>{console.log("all users stats get rt err", err)});
+});
+
+app.post("/user_stats", async (req, res) => {
   console.log("user_stats post rt", req.body);
   const tiar = req.body.time_ar;
   let total_time = 0;
   for (let i = 0; i < tiar.length; i += 1) total_time += tiar[i];
-  total_time = total_time.toFixed(3);
+  total_time = Number(total_time.toFixed(3));
   const atar = req.body.attempts_ar;
   let total_attemps = 0;
   for (let i = 0; i < atar.length; i += 1) total_attemps += atar[i];
-  let percentage_accuracy = 12 / total_attemps*100;
-  percentage_accuracy = percentage_accuracy.toFixed(2);
+  let percentage_accuracy = (12 / total_attemps) * 100;
+  percentage_accuracy = Number(percentage_accuracy.toFixed(2));
+  console.log(typeof percentage_accuracy);
   console.log({ time: total_time, accuracy: percentage_accuracy });
+
+  let mail = req.cookies.cookieName;
+
+  console.log(typeof mail);
+  User.find({ email: mail }).then((users) => {
+    console.log(users[0].name);
+    Player.findOne({ email: mail }).then((found) => {
+      if (found===null) {
+        Player.create({
+          email: mail,
+          time: total_time,
+          accuracy: percentage_accuracy,
+          name: users[0].name,
+        })
+          .then((nuser) => console.log("create", nuser))
+          .catch((err) => console.log("create err", err));
+      } else {
+        Player.findOneAndReplace(
+          { email: mail },
+          {
+            email: mail,
+            time: total_time,
+            accuracy: percentage_accuracy,
+            name: users[0].name,
+          }
+        )
+          .then((nuser) =>
+            console.log("replace returns the old document", nuser)
+          )
+          .catch((err) => console.log("find one and replace err", err));
+      }
+    });
+  });
   res.send({ time: total_time, accuracy: percentage_accuracy });
 });
 
