@@ -75,8 +75,22 @@ function Navbar({verified,loggedin}) {
                    About
                   </Link>
                 </li>
+                <li className="nav-item" data-bs-dismiss="offcanvas">
+                      <Link to="/admin" className="nav-link">
+                        Admin page
+                      </Link>
+                    </li>
+                    <li className="nav-item" data-bs-dismiss="offcanvas">
+                      <a
+                        className="nav-link"
+                        href="just for warning"
+                        onClick={handleLogout}
+                      >
+                        Log Out
+                      </a>
+                    </li>
 
-                {verified==true ? 
+                {/* {verified ? 
                   
                     <li className="nav-item" data-bs-dismiss="offcanvas">
                       <Link to="/admin" className="nav-link">
@@ -102,7 +116,7 @@ function Navbar({verified,loggedin}) {
                     </li>
                     :
                     <></>
-                }
+                } */}
                 
               </ul>
             </div>
