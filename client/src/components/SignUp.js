@@ -12,8 +12,8 @@ function SignUp() {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
-    })
-    .then(()=>{navigate('/play')})
+    },{withCredentials:true})//credentials needed even when we want to set cookie
+    .then((res)=>{console.log('register user signUp page',res); navigate('/play')})
     .catch((err)=>(console.log('register fn axios',err)));
 
     e.target.name.value="";

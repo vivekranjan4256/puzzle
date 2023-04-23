@@ -16,7 +16,10 @@ function Login() {
       .then((incoming_data) => {
         console.log('loginUser fn',incoming_data)
        
-        if (incoming_data) navigate("/play");
+        if (incoming_data)
+        {
+          navigate("/play");
+        }
       })
       .catch((err) => console.log("register fn axios", err));
 

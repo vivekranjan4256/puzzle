@@ -1,6 +1,8 @@
 
 body {
     padding-top:71px ;
+    
+    background-image: url('./bg_img.jpeg');
   }
 
   
@@ -154,4 +156,19 @@ body {
     }
   }
   
- 
+  .congrats-box {
+    padding-top:5%;
+    padding-right: 8%;
+    padding-left: 8%;
+    padding-bottom: 5%;
+    margin-top: 6%;
+    margin-left:auto;
+    margin-right:auto;
+    border-width: 10px;
+    border-radius: 40px;
+    color: rgb(8, 8, 8);
+    max-width: 60%;
+    background: url(./win_img.jpeg);
+    background-position: center;
+    font-family: "Montserrat";
+   }

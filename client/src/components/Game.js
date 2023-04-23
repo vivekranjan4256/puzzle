@@ -46,7 +46,6 @@ function Game({ showFinalStats, setCurUserFinalStats }) {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
   const [gameOver, setGameOver] = useState(false);
-  const [isCelebrating, setIsCelebrating] = useState(false);
 
   const handleStart = () => {
     setTime(Date.now());
@@ -72,6 +71,7 @@ function Game({ showFinalStats, setCurUserFinalStats }) {
         { withCredentials: true }//using this as the source to get usermail
       )
       .then((res) => {
+        console.log('send_user_stats',res.data)
         setCurUserFinalStats(res.data);
       })
       .catch((err) => {

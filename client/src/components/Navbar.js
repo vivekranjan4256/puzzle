@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import "./navbar.css";
 import { useEffect } from "react";
 
-function Navbar(verified) {
+function Navbar({verified,loggedin}) {
+
   const navigate = useNavigate();
   const handleLogout = (e) => {
     console.log(e);
@@ -75,15 +76,22 @@ function Navbar(verified) {
                   </Link>
                 </li>
 
-                {verified ? 
-                  <>
+                {verified==true ? 
+                  
                     <li className="nav-item" data-bs-dismiss="offcanvas">
                       <Link to="/admin" className="nav-link">
                         Admin page
                       </Link>
                     </li>
 
-                    <li className="nav-item" data-bs-dismiss="offcanvas">
+                    
+                
+                : 
+                  <></>
+                }
+                {
+                  loggedin?
+                  <li className="nav-item" data-bs-dismiss="offcanvas">
                       <a
                         className="nav-link"
                         href="just for warning"
@@ -92,10 +100,10 @@ function Navbar(verified) {
                         Log Out
                       </a>
                     </li>
-                  </>
-                : 
-                  <></>
+                    :
+                    <></>
                 }
+                
               </ul>
             </div>
           </div>

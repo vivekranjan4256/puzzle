@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function AdminPage(props) {
+function AdminPage() {
   const navigate = useNavigate();
 
   let [allusersinfo, setallusersinfo] = useState([]);
@@ -36,7 +36,7 @@ function AdminPage(props) {
 
   return (
     <>
-      <table className="table">
+      <table className="table" style={{color:"black",fontSize:"2rem"}}>
         <thead>
           <tr>
             <th scope="col">Rank</th>

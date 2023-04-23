@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import GameWinBox from "../components/GameWinBox";
 
-function GamePage({ setVerified }) {
+function GamePage({ setVerified, setloggedin }) {
   const navigate = useNavigate();
 
   const [showGame, setShowGame] = useState(false);
@@ -22,18 +22,32 @@ function GamePage({ setVerified }) {
 
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/is_linked", {
+      .get(process.env.REACT_APP_BACKEND_URI + "/is_logged",{
         withCredentials: true,
       })
-      .then((resp) => {
-        console.log("GamePage", resp.data);
-        // setVerified(true)
-        if (resp.data === true) {
+      .then(async (resp) => {
+        console.log('is_logged resp',resp)
+        if (resp.data) {
+          setloggedin(true);
           navigate("/play");
-        } else {
-          navigate("/");
+          await axios
+            .get(process.env.REACT_APP_BACKEND_URI + "/is_linked", {
+              withCredentials: true,
+            })
+            .then((respo) => {
+              console.log('is_logged respo',respo)
+              console.log("GamePage", respo.data);
+
+              if (respo.data === true) {
+                setVerified(true);
+                
+              } else {
+                navigate("/");
+              }
+            });
         }
-      });
+      })
+      .catch((err) => {});
   }, []);
 
   return (

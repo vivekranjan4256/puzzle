@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Confetti from "react-confetti";
 import { useState } from "react";
 import "../styles.css";
-function GameWinBox({curUserFinalStats}) {
-console.log('Game win box',curUserFinalStats.time)
-    const [showConfetti, setShowConfetti] = useState(true);
+import axios from "axios";
 
+function GameWinBox({curUserFinalStats}) {
+console.log('Game win box',curUserFinalStats)
+    const [showConfetti, setShowConfetti] = useState(true);
+    const [rank,setrank]=useState(-1)
   setTimeout(() => {
     setShowConfetti(false);
   }, 10 * 1000);
-    const rank=2;
+
+  useEffect(()=>{
+    axios
+    .get(process.env.REACT_APP_BACKEND_URI + "/all_user_stats")
+    .then((resp) => {
+      let rk=(resp.data).findIndex(user=>user.email==curUserFinalStats.email)
+      console.log("all user stats resp", resp.data,rk+1);
+      setrank(rk+1)
+    })
+    .catch((err) => console.log("all user stats fn adminPage err", err));
+   
+  },[])
+
 
 
   return (

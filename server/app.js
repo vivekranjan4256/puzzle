@@ -115,9 +115,8 @@ app.post("/user_stats", async (req, res) => {
   console.log({ time: total_time, accuracy: percentage_accuracy });
 
   let mail = req.cookies.cookieName;
-
   console.log(typeof mail);
-  User.find({ email: mail }).then((users) => {
+  await User.find({ email: mail }).then((users) => {
     console.log(users[0].name);
     Player.findOne({ email: mail }).then((found) => {
       if (found===null) {
@@ -145,13 +144,15 @@ app.post("/user_stats", async (req, res) => {
           .catch((err) => console.log("find one and replace err", err));
       }
     });
+    res.send({email: mail, total_time, accuracy: percentage_accuracy });
   });
-  res.send({ time: total_time, accuracy: percentage_accuracy });
+  
 });
 
 app.post("/register", function (req, res) {
   console.log("register post rt", req.body);
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+   
     const newUser = new User({
       email: req.body.email,
       password: hash,
@@ -161,11 +162,14 @@ app.post("/register", function (req, res) {
     newUser
       .save()
       .then(() => {
-        res.cookie("cookieName", "cookieValue");
         console.log("register done");
-        res.end();
+        console.log(req.body.email)
+        res.cookie("cookieName", req.body.email);
+        res.send(true)
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {console.log(err),res.send(false)});
+
+     
   });
 });
 
@@ -203,6 +207,19 @@ app.get("/logout", function (req, res) {
   res.end();
 });
 
+app.get("/is_logged", function (req, res) {
+  console.log(
+    "cookie check in is_logged get rt",
+    req.cookies,
+    req.cookies.cookieName
+  );
+  if (req.cookies.cookieName != null) {
+    res.send(true);
+  } else {
+    res.send(false);
+  }
+});
+
 app.get("/is_linked", function (req, res) {
   console.log(
     "cookie check in is_linked get rt",
@@ -219,6 +236,7 @@ app.get("/is_linked", function (req, res) {
 app.get("/is_admin", function (req, res) {
   console.log(
     "cookie check in is_admin get rt",
+    req,
     req.cookies,
     req.cookies.cookieName
   );
