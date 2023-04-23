@@ -13,7 +13,7 @@ const app = express();
 app.use(express.static("public"));
 app.use(
   express.urlencoded({
-    extended: true,
+    extended: false,
   })
 );
 app.use(express.json());
@@ -112,7 +112,7 @@ app.post("/login", function (req, res) {
           if (result === true) {
             console.log("login compare success");
             // saving the data to the cookies
-            res.cookie("cookieName", "cookieValue");
+            res.cookie("cookieName", req.body.email);
 
             res.send(true);
           }
@@ -133,11 +133,24 @@ app.get("/logout", function (req, res) {
 
 app.get("/is_linked", function (req, res) {
   console.log(
-    "cookie check in secret route",
+    "cookie check in is_linked get rt",
     req.cookies,
     req.cookies.cookieName
   );
   if (req.cookies.cookieName != null) {
+    res.send(true);
+  } else {
+    res.send(false);
+  }
+});
+
+app.get("/is_admin", function (req, res) {
+  console.log(
+    "cookie check in is_admin get rt",
+    req.cookies,
+    req.cookies.cookieName
+  );
+  if (req.cookies.cookieName=='2005416@kiit.ac.in') {
     res.send(true);
   } else {
     res.send(false);

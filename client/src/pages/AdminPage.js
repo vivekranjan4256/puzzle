@@ -1,7 +1,21 @@
 import axios from "axios";
-
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function AdminPage(props) {
+const navigate=useNavigate()
+
+  useEffect(() => {
+    axios.get(process.env.REACT_APP_BACKEND_URI+'/is_admin',{withCredentials:true}).then((resp) => {
+      console.log("AdminPage",resp)
+      if (resp.data === true) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    });
+  }, []);
+
   return (
     <>
       <table className="table">

@@ -9,7 +9,7 @@ import AdminPage from "./pages/AdminPage";
 
 function App() {
   const [verified, setVerified] = useState(false);
-
+  
   return (
     <>
       <Router>

@@ -3,11 +3,14 @@ import Game from "../components/Game";
 import Rules from "../components/Rules";
 import CurrentUserStats from "../components/CurrentUserStats";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
     
 
 function GamePage() {
+  const navigate=useNavigate()
+
+
   const [showGame, setShowGame] = useState(false);
   const [showStats, setShowStats] = useState(false);
 
@@ -21,12 +24,12 @@ function GamePage() {
 
  
   useEffect(() => {
-    axios.get(process.env.REACT_APP_BACKEND_URI+'/is_linked',{withCredentials:true}).then((data) => {
-      console.log("GamePage",data)
-      if (data === true) {
-        <Navigate to="/play" />;
+    axios.get(process.env.REACT_APP_BACKEND_URI+'/is_linked',{withCredentials:true}).then((resp) => {
+      console.log("GamePage",resp.data)
+      if (resp.data === true) {
+        navigate("/play");
       } else {
-        <Navigate to="/login" />;
+        navigate("/");
       }
     });
   }, []);
