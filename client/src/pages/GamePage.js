@@ -27,24 +27,26 @@ function GamePage({ setVerified, setloggedin }) {
       })
       .then(async (resp) => {
         console.log('is_logged resp',resp)
-        if (resp.data) {
-          setloggedin(true);
-          navigate("/play");
+        if (resp.data===true) {
+          setloggedin(true)
+           navigate("/play");
+         
           await axios
-            .get(process.env.REACT_APP_BACKEND_URI + "/is_linked", {
+            .get(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
               withCredentials: true,
             })
             .then((respo) => {
-              console.log('is_logged respo',respo)
-              console.log("GamePage", respo.data);
+              console.log('is_logged respo admin',respo)
+              console.log("GamePage admin", respo.data);
 
               if (respo.data === true) {
                 setVerified(true);
-                
-              } else {
-                navigate("/");
-              }
+              } 
             });
+        }
+        else
+        {
+          navigate('/');
         }
       })
       .catch((err) => {});
