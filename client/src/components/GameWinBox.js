@@ -17,7 +17,7 @@ console.log('Game win box',curUserFinalStats)
     .get(process.env.REACT_APP_BACKEND_URI + "/all_user_stats")
     .then((resp) => {
       let rk=(resp.data).findIndex(user=>user.email==curUserFinalStats.email)
-      console.log("all user stats resp", resp.data,rk+1);
+      //console.log("all user stats resp", resp.data,rk+1);
       setrank(rk+1)
     })
     .catch((err) => console.log("all user stats fn adminPage err", err));
