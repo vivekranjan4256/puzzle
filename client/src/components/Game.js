@@ -82,7 +82,7 @@ function Game({ showFinalStats, setCurUserFinalStats }) {
     if (event.key === "Enter") {
       event.preventDefault();
       // console.log(arr[index]);
-      if (event.target.value === arr[index]) {
+      if ((event.target.value).toLowerCase() === (arr[index]).toLocaleLowerCase()) {
         timePassed[index] = (time - now) / 1000;
         handleStop();
         if (index === 11) {

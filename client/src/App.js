@@ -7,7 +7,8 @@ import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import AdminPage from "./pages/AdminPage";
 import AboutPage from "./pages/AboutPage";
-
+import UrlNotFound from './components/UrlNotFound'
+import UnauthorizedAccess from "./components/UnauthorizedAccess";
 function App() {
   const [verified, setVerified] = useState(false);
   const [loggedin,setloggedin]=useState(false);
@@ -15,10 +16,12 @@ function App() {
     <>
       <Router>
         {/* any component which uses routes mentioned in this router must be in here */}
-        <Navbar verified={verified} loggedin={loggedin}/>
+        <Navbar verified={verified} loggedin={loggedin} setVerified={setVerified} setloggedin={setloggedin}/>
         <Routes>
+        <Route path="*" element={<UrlNotFound />} />
           <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<AdminPage />} />
+
+          <Route path="/admin" element={verified?<AdminPage />:<UnauthorizedAccess/>}/>
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />

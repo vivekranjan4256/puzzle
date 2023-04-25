@@ -6,7 +6,7 @@ function Home() {
       <div className="container">
         <i className="fas fa-key fa-6x"></i>
         <h1 className="display-3">Treasure Hunt</h1>
-        <p className="lead">Jump into the world of mysteries and let the adeventure begin!</p>
+        <p className="lead">Jump into the world of mysteries and let the adventure begin!</p>
         <hr />
         <Link to="/signup" className="btn btn-light btn-lg">
           Register

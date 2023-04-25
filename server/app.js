@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const cookieSession=require('cookie-session')
+const cookieSession = require("cookie-session");
 
 const saltRounds = 10; //just should be above where it is used,not necessarily here
 
@@ -47,7 +47,9 @@ app.use(cookieParser());
 // );
 
 //"mongodb://127.0.0.1:27017/elitmusDB"
-mongoose.connect(process.env.MONGO_URI).catch((err) => console.log("error connecting to elitmusDB", err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .catch((err) => console.log("error connecting to elitmusDB", err));
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -59,14 +61,14 @@ db.once("open", function () {
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required:true,
-    unique: true
+    required: true,
+    unique: true,
   },
   password: String,
-  name:{
-    type:String,
-    required:true
-  }
+  name: {
+    type: String,
+    required: true,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
@@ -99,12 +101,14 @@ app.get("/all_user_stats", (req, res) => {
   Player.find()
     .then((users) => {
       users.sort(function (a, b) {
-        return a.time-b.time;
+        return a.time - b.time;
       }); //if positive value is returned then swap a,b})
       console.log(users);
       res.send(users);
     })
-    .catch((err)=>{console.log("all users stats get rt err", err)});
+    .catch((err) => {
+      console.log("all users stats get rt err", err);
+    });
 });
 
 app.post("/user_stats", async (req, res) => {
@@ -126,7 +130,7 @@ app.post("/user_stats", async (req, res) => {
   await User.find({ email: mail }).then((users) => {
     console.log(users[0].name);
     Player.findOne({ email: mail }).then((found) => {
-      if (found===null) {
+      if (found === null) {
         Player.create({
           email: mail,
           time: total_time,
@@ -151,15 +155,13 @@ app.post("/user_stats", async (req, res) => {
           .catch((err) => console.log("find one and replace err", err));
       }
     });
-    res.send({email: mail, total_time, accuracy: percentage_accuracy });
+    res.send({ email: mail, total_time, accuracy: percentage_accuracy });
   });
-  
 });
 
 app.post("/register", function (req, res) {
   console.log("register post rt", req.body);
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-   
     const newUser = new User({
       email: req.body.email,
       password: hash,
@@ -170,15 +172,20 @@ app.post("/register", function (req, res) {
       .save()
       .then(() => {
         console.log("register done");
-        console.log(req.body.email)
+        console.log(req.body.email);
 
         //same site and secure are essential,not sure about http
-        res.cookie("cookieName", req.body.email,{ expires: new Date(Date.now() + 24*60*60*1000),httpOnly:false,sameSite:"none",secure:true});
-        res.send(true)
+        res.cookie("cookieName", req.body.email, {
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          httpOnly: false,
+          sameSite: "none",
+          secure: true,
+        });
+        res.send(true);
       })
-      .catch((err) => {console.log(err),res.send(false)});
-
-     
+      .catch((err) => {
+        console.log(err), res.send(false);
+      });
   });
 });
 
@@ -197,7 +204,12 @@ app.post("/login", function (req, res) {
           if (result === true) {
             console.log("login compare success");
             // saving the data to the cookies
-            res.cookie("cookieName", req.body.email,{ expires: new Date(Date.now() + 24*60*60*1000),httpOnly:false,sameSite:"none",secure:true});
+            res.cookie("cookieName", req.body.email, {
+              expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+              httpOnly: false,
+              sameSite: "none",
+              secure: true,
+            });
             res.send(true);
           }
         });
@@ -211,7 +223,11 @@ app.post("/login", function (req, res) {
 
 app.get("/logout", function (req, res) {
   console.log("logout get rt");
-  res.clearCookie("cookieName",{httpOnly:false,sameSite:"none",secure:true});//without options give warning in browser console
+  res.clearCookie("cookieName", {
+    httpOnly: false,
+    sameSite: "none",
+    secure: true,
+  }); //without options give warning in browser console
   res.end();
 });
 

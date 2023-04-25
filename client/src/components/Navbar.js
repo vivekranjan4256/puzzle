@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import "./navbar.css";
 import { useEffect } from "react";
 
-function Navbar({verified,loggedin}) {
-
+function Navbar({ verified, loggedin, setVerified, setloggedin }) {
   const navigate = useNavigate();
+
   const handleLogout = (e) => {
     console.log(e);
     e.preventDefault();
@@ -15,6 +15,8 @@ function Navbar({verified,loggedin}) {
         withCredentials: true,
       })
       .then(() => {
+        setVerified(false);
+        setloggedin(false);
         navigate("/");
       })
       .catch((err) => {
@@ -22,6 +24,9 @@ function Navbar({verified,loggedin}) {
       });
   };
 
+  // useEffect(()=>{
+
+  // },[verified,loggedin])
   return (
     <>
       <nav
@@ -68,56 +73,37 @@ function Navbar({verified,loggedin}) {
             <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li className="nav-item" data-bs-dismiss="offcanvas">
-                  <Link to="/about"
-                    className="nav-link"
-                    
-                  >
-                   About
+                  <Link to="/about" className="nav-link">
+                    About
                   </Link>
                 </li>
-                <li className="nav-item" data-bs-dismiss="offcanvas">
-                      <Link to="/admin" className="nav-link">
-                        Admin page
-                      </Link>
-                    </li>
-                    <li className="nav-item" data-bs-dismiss="offcanvas">
-                      <a
-                        className="nav-link"
-                        href="just for warning"
-                        onClick={handleLogout}
-                      >
-                        Log Out
-                      </a>
-                    </li>
-
-                {/* {verified ? 
-                  
-                    <li className="nav-item" data-bs-dismiss="offcanvas">
-                      <Link to="/admin" className="nav-link">
-                        Admin page
-                      </Link>
-                    </li>
-
-                    
-                
-                : 
-                  <></>
-                }
-                {
-                  loggedin?
+                {verified ? (
                   <li className="nav-item" data-bs-dismiss="offcanvas">
-                      <a
-                        className="nav-link"
-                        href="just for warning"
-                        onClick={handleLogout}
-                      >
-                        Log Out
-                      </a>
-                    </li>
-                    :
-                    <></>
-                } */}
-                
+                    <Link to="/admin" className="nav-link">
+                      Admin page
+                    </Link>
+                  </li>
+                ) : (
+                  <></>
+                )}
+                <li className="nav-item" data-bs-dismiss="offcanvas">
+                  <Link to="/" className="nav-link">
+                    Home
+                  </Link>
+                </li>
+                {loggedin ? (
+                  <li className="nav-item" data-bs-dismiss="offcanvas">
+                    <a
+                      className="nav-link"
+                      href="just for warning"
+                      onClick={handleLogout}
+                    >
+                      Log Out
+                    </a>
+                  </li>
+                ) : (
+                  <></>
+                )}
               </ul>
             </div>
           </div>
