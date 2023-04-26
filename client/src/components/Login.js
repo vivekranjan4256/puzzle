@@ -15,23 +15,19 @@ function Login() {
         {
           email: e.target.email.value,
           password: e.target.password.value,
-        },
-        { withCredentials: true }
+        }
       )
       .then((incoming) => {
         console.log("loginUser fn", incoming);
 
         if (incoming.data.check) {
           Cookies.set("puzzle_cookie", incoming.data.puzzle_cookie, {
-            expires: 2 / 24,
-            httpOnly: false,
-            sameSite: "none",
-            secure: true,
+            expires: 2 / 24
           }); //for 2/24 of a day
           navigate("/play");
         }
       })
-      .catch((err) => console.log("register fn axios", err));
+      .catch((err) => console.log("login fn axios", err));
 
     e.target.email.value = "";
     e.target.password.value = "";

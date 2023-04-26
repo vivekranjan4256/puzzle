@@ -1,5 +1,6 @@
 import axios from "axios";
 import {useNavigate} from 'react-router-dom';
+import Cookies from "js-cookie";
 
 import '../styles.css'
 
@@ -12,9 +13,22 @@ function SignUp() {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
-    },{withCredentials:true})//credentials needed even when we want to set cookie
-    .then((res)=>{console.log('register user signUp page',res); navigate('/play')})
-    .catch((err)=>(console.log('register fn axios',err)));
+    },{withCredentials:true})
+    .then((incoming) => {
+      console.log("loginUser fn", incoming);
+
+      if (incoming.data.check) {
+        Cookies.set("puzzle_cookie", incoming.data.puzzle_cookie, {
+          expires: 2 / 24,
+          httpOnly: false,
+          sameSite: "none",
+          secure: true,
+        }); //for 2/24 of a day
+        navigate("/play");
+      }
+    })
+    .catch((err) => console.log("register fn axios", err));
+
 
     e.target.name.value="";
     e.target.email.value="";
