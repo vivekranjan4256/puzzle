@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./navbar.css";
-import { useEffect } from "react";
+
+import Cookies from "js-cookie";
 
 function Navbar({ verified, loggedin, setVerified, setloggedin }) {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function Navbar({ verified, loggedin, setVerified, setloggedin }) {
       .then(() => {
         setVerified(false);
         setloggedin(false);
+        Cookies.remove("puzzle_cookie");
         navigate("/");
       })
       .catch((err) => {
@@ -24,9 +26,6 @@ function Navbar({ verified, loggedin, setVerified, setloggedin }) {
       });
   };
 
-  // useEffect(()=>{
-
-  // },[verified,loggedin])
   return (
     <>
       <nav
@@ -91,6 +90,7 @@ function Navbar({ verified, loggedin, setVerified, setloggedin }) {
                     Home
                   </Link>
                 </li>
+                
                 {loggedin ? (
                   <li className="nav-item" data-bs-dismiss="offcanvas">
                     <a

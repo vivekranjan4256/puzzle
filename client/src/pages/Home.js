@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import '../styles.css'
-function Home() {
+function Home({loggedin}) {
+
   return (
     <div className="jumbotron centered">
       <div className="container">
@@ -11,7 +12,7 @@ function Home() {
         <Link to="/signup" className="btn btn-light btn-lg">
           Register
           </Link>
-        <Link to='/login' className="btn btn-dark btn-lg">
+        <Link to={loggedin?'/play':'/login'} className="btn btn-dark btn-lg">
           Login
         </Link>
       </div>

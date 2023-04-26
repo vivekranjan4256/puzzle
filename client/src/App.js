@@ -9,9 +9,43 @@ import AdminPage from "./pages/AdminPage";
 import AboutPage from "./pages/AboutPage";
 import UrlNotFound from './components/UrlNotFound'
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
+import axios from 'axios'
+// import Cookies from "js-cookie";
+
 function App() {
+
   const [verified, setVerified] = useState(false);
   const [loggedin,setloggedin]=useState(false);
+
+  // verification is done on this and game page
+  useEffect(() => {
+    // console.log(typeof(Cookies.get('puzzle_cookie')))
+    axios
+      .get(process.env.REACT_APP_BACKEND_URI + "/is_logged",{
+      // puzzle_cookie: Cookies.get('puzzle_cookie')
+      withCredentials: true
+      })
+      .then(async (resp) => {
+        console.log('is_logged resp',resp)
+        if (resp.data===true) {
+          setloggedin(true)
+         
+          await axios
+            .get(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+              withCredentials: true,
+            })
+            .then((respo) => {
+              console.log('is_admin respo ',respo, respo.data);
+
+              if (respo.data === true) {
+                setVerified(true);
+              } 
+            });
+        }
+      })
+      .catch((err) => {});
+  }, []);
+
   return (
     <>
       <Router>
@@ -19,7 +53,7 @@ function App() {
         <Navbar verified={verified} loggedin={loggedin} setVerified={setVerified} setloggedin={setloggedin}/>
         <Routes>
         <Route path="*" element={<UrlNotFound />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home loggedin={loggedin}/>} />
 
           <Route path="/admin" element={verified?<AdminPage />:<UnauthorizedAccess/>}/>
           <Route path="/about" element={<AboutPage />} />
