@@ -3,9 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const cookieSession = require("cookie-session");
+const cookieParser=require('cookie-parser')
 
 const saltRounds = 10; //just should be above where it is used,not necessarily here
 
@@ -19,32 +18,18 @@ app.use(
 );
 app.use(express.json());
 
+//cors will be needed even after proxy but hopefully not for cookie 
 app.use(
-  cors({
+  cors(
+    {
     origin: process.env.FRONTEND_URI,
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     credentials: true,
-  })
+  }
+  )
 );
-app.use(function (req, res, next) {
-  res.header("Content-Type", "application/json;charset=UTF-8");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 
-app.use(cookieParser());
-
-// app.use(
-//   cookieSession({
-//     name: "session",
-//     keys: ["eltimus"],
-//     maxAge: 24 * 60 * 60 * 1000, //1day
-//   })
-// );
+app.use(cookieParser());//cookie parse is needed to parse the cookies,don't omit
 
 //"mongodb://127.0.0.1:27017/elitmusDB"
 mongoose
@@ -89,10 +74,6 @@ app.get("/", function (req, res) {
   res.send("home route");
 });
 
-app.get("/", function (req, res) {
-  res.end();
-});
-
 app.get("/register", function (req, res) {
   res.end();
 });
@@ -103,7 +84,6 @@ app.get("/all_user_stats", (req, res) => {
       users.sort(function (a, b) {
         return a.time - b.time;
       }); //if positive value is returned then swap a,b})
-      console.log(users);
       res.send(users);
     })
     .catch((err) => {
@@ -125,22 +105,22 @@ app.post("/user_stats", async (req, res) => {
   console.log(typeof percentage_accuracy);
   console.log({ time: total_time, accuracy: percentage_accuracy });
 
-  let mail = req.cookies.cookieName;
+  let mail = req.body.puzzle_cookie;
   console.log(typeof mail);
-  await User.find({ email: mail }).then((users) => {
+  User.find({ email: mail }).then(async (users) => {
     console.log(users[0].name);
-    Player.findOne({ email: mail }).then((found) => {
+  await Player.findOne({ email: mail }).then(async (found) => {
       if (found === null) {
-        Player.create({
+        await Player.create({
           email: mail,
           time: total_time,
           accuracy: percentage_accuracy,
           name: users[0].name,
         })
-          .then((nuser) => console.log("create", nuser))
+          .then((nuser) => {console.log("create", nuser)})
           .catch((err) => console.log("create err", err));
       } else {
-        Player.findOneAndReplace(
+        await Player.findOneAndReplace(
           { email: mail },
           {
             email: mail,
@@ -149,13 +129,14 @@ app.post("/user_stats", async (req, res) => {
             name: users[0].name,
           }
         )
-          .then((nuser) =>
+          .then((nuser) =>{
             console.log("replace returns the old document", nuser)
+          }
           )
           .catch((err) => console.log("find one and replace err", err));
       }
     });
-    res.send({ email: mail, total_time, accuracy: percentage_accuracy });
+    res.send({ email: mail, time:total_time, accuracy: percentage_accuracy });
   });
 });
 
@@ -173,18 +154,11 @@ app.post("/register", function (req, res) {
       .then(() => {
         console.log("register done");
         console.log(req.body.email);
-
-        //same site and secure are essential,not sure about http
-        res.cookie("cookieName", req.body.email, {
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-          httpOnly: false,
-          sameSite: "none",
-          secure: true,
-        });
-        res.send(true);
+        res.send({ puzzle_cookie: req.body.email, check: true });
       })
       .catch((err) => {
-        console.log(err), res.send(false);
+        console.log(err);
+         res.send({ check: false });
       });
   });
 });
@@ -199,23 +173,18 @@ app.post("/login", function (req, res) {
   })
     .then((foundUser) => {
       if (foundUser) {
+        //as if not match is found then findOne return null
         bcrypt.compare(password, foundUser.password, function (err, result) {
           console.log("login compare working", result);
           if (result === true) {
             console.log("login compare success");
             // saving the data to the cookies
-            res.cookie("cookieName", req.body.email, {
-              expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-              httpOnly: false,
-              sameSite: "none",
-              secure: true,
-            });
-            res.send(true);
+            res.send({ puzzle_cookie: req.body.email, check: true });
           }
         });
       } else {
         console.log("no match");
-        res.send(false);
+        res.send({ check: false });
       }
     })
     .catch((err) => console.log(err));
@@ -223,37 +192,49 @@ app.post("/login", function (req, res) {
 
 app.get("/logout", function (req, res) {
   console.log("logout get rt");
-  res.clearCookie("cookieName", {
-    httpOnly: false,
-    sameSite: "none",
-    secure: true,
-  }); //without options give warning in browser console
-  res.end();
+  res.send("user logged out");
 });
 
-app.get("/is_logged", function (req, res) {
+app.post("/is_logged", function (req, res) {
   console.log(
-    "cookie check in is_logged get rt",
-    req.cookies,
-    req.cookies.cookieName
+    "is_logged get rt",req.body
   );
-  if (req.cookies.cookieName != null) {
-    res.send(true);
+  if (req.body.cookie_present) {
+    User.findOne({
+      email: req.body.puzzle_cookie,
+    }).then((foundUser) => {
+      if (foundUser) {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    });
   } else {
     res.send(false);
   }
 });
 
-app.get("/is_admin", function (req, res) {
+app.post("/is_admin", function (req, res) {
   console.log(
     "cookie check in is_admin get rt",
-    req.cookies,
-    req.cookies.cookieName
+     req.body
   );
-  if (req.cookies.cookieName == "vivekranjan4256@gmail.com") {
-    res.send(true);
-  } else {
-    res.send(false);
+  if (req.body.cookie_present) {
+    User.findOne({
+      email: req.body.puzzle_cookie,
+    }).then((foundUser) => {
+      if (foundUser) {
+        {
+          if (req.body.puzzle_cookie === "vivekranjan4256@gmail.com") {
+            res.send(true);
+          } else {
+            res.send(false);
+          }
+        }
+      } else {
+        res.send(false);
+      }
+    });
   }
 });
 
