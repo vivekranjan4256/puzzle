@@ -9,7 +9,7 @@ function AdminPage() {
 
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+      .get(process.env.REACT_APP_BACKEND_URI + "/api/is_admin", {
         withCredentials: true,
       })
       .then((resp) => {
@@ -26,7 +26,7 @@ function AdminPage() {
 
   const allUserStats = async () => {
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/all_user_stats")
+      .get(process.env.REACT_APP_BACKEND_URI + "/api/all_user_stats")
       .then((resp) => {
         setallusersinfo(resp.data);
         console.log("all user stats resp", resp.data);

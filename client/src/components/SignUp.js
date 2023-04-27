@@ -9,7 +9,7 @@ function SignUp() {
 
   const registerUser = (e) => {
     e.preventDefault();
-    axios.post(process.env.REACT_APP_BACKEND_URI+"/register", {
+    axios.post(process.env.REACT_APP_BACKEND_URI+"/api/register", {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,

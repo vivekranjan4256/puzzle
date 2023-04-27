@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     // console.log(typeof(Cookies.get('puzzle_cookie')))
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/is_logged",{
+      .get(process.env.REACT_APP_BACKEND_URI + "/api/is_logged",{
       // puzzle_cookie: Cookies.get('puzzle_cookie')
       withCredentials: true
       })
@@ -31,7 +31,7 @@ function App() {
           setloggedin(true)
          
           await axios
-            .get(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+            .get(process.env.REACT_APP_BACKEND_URI + "/api/is_admin", {
               withCredentials: true,
             })
             .then((respo) => {

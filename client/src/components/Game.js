@@ -66,7 +66,7 @@ function Game({ showFinalStats, setCurUserFinalStats }) {
   const send_user_stats = async () => {
     await axios
       .post(
-        process.env.REACT_APP_BACKEND_URI + "/user_stats",
+        process.env.REACT_APP_BACKEND_URI + "/api/user_stats",
         { time_ar: timePassed, attempts_ar: attempts },
         { withCredentials: true }//using this as the source to get usermail
       )

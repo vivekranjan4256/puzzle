@@ -22,7 +22,7 @@ function GamePage({ setVerified, setloggedin }) {
 
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/is_logged",{
+      .get(process.env.REACT_APP_BACKEND_URI + "/api/is_logged",{
         withCredentials: true,
       })
       .then(async (resp) => {
@@ -32,7 +32,7 @@ function GamePage({ setVerified, setloggedin }) {
            navigate("/play");
          
           await axios
-            .get(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+            .get(process.env.REACT_APP_BACKEND_URI + "/api/is_admin", {
               withCredentials: true,
             })
             .then((respo) => {
