@@ -14,10 +14,10 @@ console.log('Game win box',curUserFinalStats)
 
   useEffect(()=>{
     axios
-    .get(process.env.REACT_APP_BACKEND_URI + "/api/all_user_stats")
+    .get(process.env.REACT_APP_BACKEND_URI + "/all_user_stats")
     .then((resp) => {
       let rk=(resp.data).findIndex(user=>user.email==curUserFinalStats.email)
-      //console.log("all user stats resp", resp.data,rk+1);
+      //console.log("all user stats resp winbox", resp.data,rk+1);
       setrank(rk+1)
     })
     .catch((err) => console.log("all user stats fn adminPage err", err));
@@ -42,7 +42,7 @@ console.log('Game win box',curUserFinalStats)
         <br /><br />
         <p>Rank: {rank}</p>
         <p>Accuracy: {curUserFinalStats.accuracy}%</p>
-        <p>Total time taken: {curUserFinalStats.total_time} seconds</p>
+        <p>Total time taken: {curUserFinalStats.time} seconds</p>
         
         
   </div>

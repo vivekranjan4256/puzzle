@@ -10,20 +10,20 @@ import AboutPage from "./pages/AboutPage";
 import UrlNotFound from './components/UrlNotFound'
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
 import axios from 'axios'
-// import Cookies from "js-cookie";
+ import Cookies from "js-cookie";
 
 function App() {
 
   const [verified, setVerified] = useState(false);
   const [loggedin,setloggedin]=useState(false);
 
-  // verification is done on this and game page
+  // verification is done on this , game page and admin page
   useEffect(() => {
-    // console.log(typeof(Cookies.get('puzzle_cookie')))
+     console.log(Cookies.get('puzzle_cookie'))
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/api/is_logged",{
-      // puzzle_cookie: Cookies.get('puzzle_cookie')
-      withCredentials: true
+      .post(process.env.REACT_APP_BACKEND_URI + "/is_logged",{
+        cookie_present:(Cookies.get('puzzle_cookie')?true:false),
+     puzzle_cookie: Cookies.get('puzzle_cookie'),
       })
       .then(async (resp) => {
         console.log('is_logged resp',resp)
@@ -31,8 +31,9 @@ function App() {
           setloggedin(true)
          
           await axios
-            .get(process.env.REACT_APP_BACKEND_URI + "/api/is_admin", {
-              withCredentials: true,
+            .post(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+              cookie_present:(Cookies.get('puzzle_cookie')?true:false),
+              puzzle_cookie: Cookies.get('puzzle_cookie'),
             })
             .then((respo) => {
               console.log('is_admin respo ',respo, respo.data);

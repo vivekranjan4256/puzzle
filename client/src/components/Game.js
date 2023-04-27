@@ -1,9 +1,8 @@
 import React from "react";
 import { useState, useRef, useEffect } from "react";
 import "../styles.css";
-import GameWinBox from "./GameWinBox";
 import axios from "axios";
-
+import Cookies from "js-cookie";
 function Game({ showFinalStats, setCurUserFinalStats }) {
   const [names, setNames] = useState([
     "",
@@ -66,9 +65,8 @@ function Game({ showFinalStats, setCurUserFinalStats }) {
   const send_user_stats = async () => {
     await axios
       .post(
-        process.env.REACT_APP_BACKEND_URI + "/api/user_stats",
-        { time_ar: timePassed, attempts_ar: attempts },
-        { withCredentials: true }//using this as the source to get usermail
+        process.env.REACT_APP_BACKEND_URI + "/user_stats",
+        {puzzle_cookie:Cookies.get('puzzle_cookie'), time_ar: timePassed, attempts_ar: attempts }
       )
       .then((res) => {
         console.log('send_user_stats',res.data)

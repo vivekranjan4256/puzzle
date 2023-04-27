@@ -4,6 +4,7 @@ import Rules from "../components/Rules";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import GameWinBox from "../components/GameWinBox";
+import Cookies from "js-cookie";
 
 function GamePage({ setVerified, setloggedin }) {
   const navigate = useNavigate();
@@ -22,8 +23,9 @@ function GamePage({ setVerified, setloggedin }) {
 
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/api/is_logged",{
-        withCredentials: true,
+      .post(process.env.REACT_APP_BACKEND_URI + "/is_logged",{
+        cookie_present:(Cookies.get('puzzle_cookie')?true:false),
+        puzzle_cookie: Cookies.get('puzzle_cookie'),
       })
       .then(async (resp) => {
         console.log('is_logged resp',resp)
@@ -32,8 +34,9 @@ function GamePage({ setVerified, setloggedin }) {
            navigate("/play");
          
           await axios
-            .get(process.env.REACT_APP_BACKEND_URI + "/api/is_admin", {
-              withCredentials: true,
+            .post(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+              cookie_present:(Cookies.get('puzzle_cookie')?true:false),
+              puzzle_cookie: Cookies.get('puzzle_cookie'),
             })
             .then((respo) => {
               console.log('is_logged respo admin',respo)

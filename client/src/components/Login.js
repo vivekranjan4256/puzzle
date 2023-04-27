@@ -11,7 +11,7 @@ function Login() {
     e.preventDefault();
     await axios
       .post(
-        process.env.REACT_APP_BACKEND_URI + "/api/login",
+        process.env.REACT_APP_BACKEND_URI + "/login",
         {
           email: e.target.email.value,
           password: e.target.password.value,
@@ -23,9 +23,6 @@ function Login() {
         if (incoming.data.check) {
           Cookies.set("puzzle_cookie", incoming.data.puzzle_cookie, {
             expires: 2 / 24,
-            httpOnly: false,
-            sameSite: "none",
-            secure: true,
           }); //for 2/24 of a day
           navigate("/play");
         }

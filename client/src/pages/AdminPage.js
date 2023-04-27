@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -9,8 +10,9 @@ function AdminPage() {
 
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/api/is_admin", {
-        withCredentials: true,
+      .post(process.env.REACT_APP_BACKEND_URI + "/is_admin", {
+        cookie_present:(Cookies.get('puzzle_cookie')?true:false),
+              puzzle_cookie: Cookies.get('puzzle_cookie'),
       })
       .then((resp) => {
         console.log("AdminPage", resp);
@@ -26,10 +28,10 @@ function AdminPage() {
 
   const allUserStats = async () => {
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/api/all_user_stats")
+      .get(process.env.REACT_APP_BACKEND_URI + "/all_user_stats")
       .then((resp) => {
         setallusersinfo(resp.data);
-        console.log("all user stats resp", resp.data);
+        console.log("all user stats resp admin", resp.data);
       })
       .catch((err) => console.log("all user stats fn adminPage err", err));
   };

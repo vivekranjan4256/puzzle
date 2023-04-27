@@ -12,7 +12,7 @@ function Navbar({ verified, loggedin, setVerified, setloggedin }) {
     console.log(e);
     e.preventDefault();
     axios
-      .get(process.env.REACT_APP_BACKEND_URI + "/api/logout")
+      .get(process.env.REACT_APP_BACKEND_URI + "/logout")
       .then(() => {
         setVerified(false);
         setloggedin(false);
